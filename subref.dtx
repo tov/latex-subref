@@ -1,0 +1,338 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2011 by Jesse A. Tov <tov@ccs.neu.edu>
+% ----------------------------------------------------
+% 
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in:
+%
+%    http://www.latex-project.org/lppl.txt
+%
+% and version 1.2 or later is part of all distributions of LaTeX 
+% version 1999/12/01 or later.
+%
+% ------------------------------------------------------------------
+% This is a LaTeX package to make it easy to refer to nested labels
+% using both an outer number (such as a theorem number) and an inner
+% number (such as an item in an enumeration).
+% ------------------------------------------------------------------
+%
+%   *** The package file:
+%<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<package>\ProvidesPackage{subref}[2011/04/06 v0.2 ]
+%
+%   *** The driver file:
+%<driver>\NeedsTeXFormat{LaTeX2e}
+%
+%   *** date, version, and stuff:
+%\fi
+%\ProvidesFile{subref}[2011/04/06 v0.2 ]
+% \changes{v0.2}{2011/04/06}{Delays expansion of $\backslash${\tt
+% fmtsublabel$n$} until the reference is used, so that redefining them
+% has an effect at the reference use point.}
+% \changes{v0.1}{2011/03/26}{Initial documented release}
+%
+% \CheckSum{117}
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \iffalse
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{subref} \relax
+\usepackage{hypdoc}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{subref.dtx}
+  \PrintChanges
+  \PrintIndex
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{subref}
+%
+% \DoNotIndex{\newcommand,\newenvironment,\def,\relax,\do}
+% \DoNotIndex{\if,\ifx,\else,\fi,\providecommand,\let,\global,\ignorespaces}
+% \DoNotIndex{\@undefined,\expandafter,\@for,\@subref@each}
+% 
+% {\catcode`\|=0 \catcode`\\=12
+%  |gdef|bslash{\}}
+% \makeatletter\relax
+% \newcommand{\usemacro}[2][altusage]{\relax
+%   \texttt{\bslash#2}\relax
+%   \indexmacro[#1]{#2}\relax
+% }
+% \newcommand{\defmacro}[2][usage]{\relax
+%   \usemacro[#1]{#2}\relax
+% }
+% \newcommand{\indexmacro}[2][usage]{\relax
+%   \index{#2=\string\verb!*+\bslash#2+\string|#1}\relax
+% }
+% \newcommand{\altusage}[1]{\emph{(#1)}}
+% \iffalse
+%   \expandafter\SpecialUsageIndex\csname #1\endcsname
+%   \index{#2|#1}\relax
+%   \index{#2=\string\verb!+\expandafter\string\csname #1\endcsname|#1}\relax
+% \fi
+%
+% {
+% \catcode`\|=12\relax
+% \newenvironment{decl}
+%     {\leavevmode\trivlist\item
+%      \begin{tabular}{|l|}\hline\ignorespaces}
+%     {\\\hline\end{tabular}\endtrivlist}
+% \global\let\decl\decl
+% \global\let\enddecl\enddecl
+% }
+%
+% \newcounter{thm}
+% \newenvironment{thm}
+%   {\refstepcounter{thm}%
+%    \begin{description}%
+%    \item[Theorem \arabic{thm}.]%
+%    \bgroup\itshape\ignorespaces}
+%   {\egroup\end{description}}
+%
+% \title{The \textsf{subref} package}
+% \author{Jesse A. Tov \\ \texttt{tov@ccs.neu.edu}}
+% \date{This document
+%   corresponds to \textsf{\filename}~\fileversion, dated \filedate.}
+% 
+% \maketitle
+%
+% \section{Introduction}
+%
+% The purpose of this package is to make it easy to refer to labels
+% nested within hierachies of references.  For example, suppose we
+% declare theorem with multiple parts and subparts:
+% \begin{verbatim}
+% \begin{thm}\labeli[thm:ex] This theorem has four parts:
+%   \begin{enumerate}
+%     \item\labelii[thm:ex-p1] This is part 1.
+%     \item\labelii[thm:ex-p2] This is part 2.
+%     \item\labelii This is part 3, which has two subparts:
+%       \begin{enumerate}
+%         \item\labelii[thm:ex-first] This is the first sub-part.
+%         \item\labelii[thm:ex-second] This is the second sub-part.
+%         \end{enumerate}
+%       \item\labelii[thm:ex-p4] This is part 4.
+%   \end{enumerate}
+% \end{thm}
+% Now we can refer to the whole theorem (\ref{thm:ex}) or a part
+% (\ref{thm:ex-p2}) or even a subpart (\ref{thm:ex-first}).
+% \end{verbatim}
+% We use the commands \usemacro{labeli}, \usemacro{labelii},
+% \usemacro{labeliii}, and \usemacro{labeliv} to label up to four levels
+% of structure. These commands need to be used in the proper order,
+% because, for example, \usemacro{labelii} saves information that
+% \usemacro{labeliii}
+% uses to generate three-level labels. The commands take an optional
+% argument which assigns a name to the label, but it can be omitted,
+% or the normal \usemacro{label} command may be used. That is,
+% |\labeli[labname]|
+% is equivalent to
+% |\labeli\label{labname}|.
+%
+% Note that we used |\labelii| for items in both the main and nested
+% |enumerate| environments. This is because nested |enumerate|s
+% already include multiple levels of item names in the references that
+% they produce.
+% 
+% The output of the above example is:
+% \begin{quotation}
+% \begin{thm}\labeli[thm:ex] This theorem has four parts:
+%   \begin{enumerate}
+%     \item\labelii[thm:ex-p1] This is part 1.
+%     \item\labelii[thm:ex-p2] This is part 2.
+%     \item\labelii This is part 3, which has two subparts:
+%       \begin{enumerate}
+%         \item\labelii[thm:ex-first] This is the first sub-part.
+%         \item\labelii[thm:ex-second] This is the second sub-part.
+%         \end{enumerate}
+%       \item\labelii[thm:ex-p4] This is part 4.
+%   \end{enumerate}
+% \end{thm}
+% Now we can refer to the whole theorem (\ref{thm:ex}) or a part
+% (\ref{thm:ex-p2}) or even a subpart (\ref{thm:ex-first}).
+% \end{quotation}
+% 
+% \section{Command Reference}
+%
+% \begin{decl}
+%   \defmacro{labeli} |[|\meta{label-name}$,\ldots$|]|
+%   \\
+%   \hline
+%   \defmacro{labelii} |[|\meta{label-name}$,\ldots$|]|
+%   \\
+%   \hline
+%   \defmacro{labeliii} |[|\meta{label-name}$,\ldots$|]|
+%   \\
+%   \hline
+%   \defmacro{labeliv} |[|\meta{label-name}$,\ldots$|]|
+% \end{decl}
+% These macros keep track of nested references.  Each sets the current
+% reference, which is captured by \usemacro{label}, to include all levels up
+% to the current level. For example, |\labeliii| sets the current
+% reference to include the reference saved by the closest prior call
+% to |\labelii| and appends to that the reference at the current
+% location. Each saves the current reference for use by the next level.
+%
+% Each takes an optional
+% argument which is a list of label names to use for the current
+% reference.  This is merely a convenience:
+% 
+% \medskip
+%    $|\label|n|[|\meta{label-name}_1,\ldots,\meta{label-name}_k|]| =
+%    {}$
+% \\
+% \strut\hfill
+%   $|\label|n |\label{|\meta{label-name}_1|}|
+%      \ldots|\label{|\meta{label-name}_k|}|$
+% \bigskip
+%
+% \begin{decl}
+%   \defmacro{fmtsublabeli} \marg{label-segment} \\
+%   \hline
+%   \defmacro{fmtsublabelii} \marg{label-segment} \\
+%   \hline
+%   \defmacro{fmtsublabeliii} \marg{label-segment} \\
+%   \hline
+%   \defmacro{fmtsublabeliv} \marg{label-segment}
+% \end{decl}
+%
+% These are used by \textsf{subref} to format each segment of a
+% multiple-level label. Redefine them to change how labels are
+% rendered. For example, the default rendering of a two level label is
+% |2.3|, but to get |2(3)| instead, write:
+%
+% \begin{verbatim}
+% \renewcommand{\fmtsublabelii}[1]{(#1)}
+% \end{verbatim}
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+%
+% \begin{macro}{\fmtsublabeli}
+% \begin{macro}{\fmtsublabelii}
+% \begin{macro}{\fmtsublabeliii}
+% \begin{macro}{\fmtsublabeliv}
+% These are used to style macro references at levels 1 through
+% 4:
+%    \begin{macrocode}
+\providecommand*\fmtsublabeli[1]{#1}
+\providecommand*\fmtsublabelii[1]{.#1}
+\providecommand*\fmtsublabeliii[1]{.#1}
+\providecommand*\fmtsublabeliv[1]{.#1}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\labeli}
+% Captures the current label as the level \emph{i} label. Higher label
+% levels are undefined, so that we don't get weird behavior such as
+% mixing multiple levels.  The current label is defined to be the
+% level \emph{i} label only.
+%    \begin{macrocode}
+\newcommand\labeli{%
+  \global\let\subref@labeli\@currentlabel
+  \global\let\subref@labelii\@undefined
+  \global\let\subref@labeliii\@undefined
+  \global\let\subref@labeliv\@undefined
+  \global\def\@currentlabel{%
+    \string\fmtsublabeli{\subref@labeli}%
+  }%
+  \subref@optlabels
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\labelii}
+% Captures the current label as the level \emph{ii} label. Higher label
+% levels are undefined, so that we don't get weird behavior such as
+% mixing multiple levels.  The current label is defined to be the
+% level \emph{i} and \emph{ii} labels together.
+%    \begin{macrocode}
+\newcommand\labelii{%
+  \global\let\subref@labelii\@currentlabel
+  \global\let\subref@labeliii\@undefined
+  \global\let\subref@labeliv\@undefined
+  \global\def\@currentlabel{%
+    \string\fmtsublabeli{\subref@labeli}%
+    \string\fmtsublabelii{\subref@labelii}%
+  }%
+  \subref@optlabels
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\labeliii}
+% Like |\labelii|, but captures three label levels.
+%    \begin{macrocode}
+\newcommand\labeliii{%
+  \global\let\subref@labeliii\@currentlabel
+  \global\let\subref@labeliv\@undefined
+  \global\def\@currentlabel{%
+    \string\fmtsublabeli{\subref@labeli}%
+    \string\fmtsublabelii{\subref@labelii}%
+    \string\fmtsublabeliii{\subref@labeliii}%
+  }%
+  \subref@optlabels
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\labeliv}
+% Like |\labelii|, but captures four label levels.
+%    \begin{macrocode}
+\newcommand\labeliv{%
+  \global\let\subref@labeliv\@currentlabel
+  \global\def\@currentlabel{%
+    \string\fmtsublabeli{\subref@labeli}%
+    \string\fmtsublabelii{\subref@labelii}%
+    \string\fmtsublabeliii{\subref@labeliii}%
+    \string\fmtsublabeliii{\subref@labeliv}%
+  }%
+  \subref@optlabels
+}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\subref@optlabels}
+% Takes an optional argument which is a comma-separated list of label
+% names, and invokes |\label| for each. We use
+% this at the end of each of the new
+% |\label|\emph{n} macros so that
+% each takes a list of label names as an optional argument.
+%    \begin{macrocode}
+\newcommand\subref@optlabels[1][\relax]{%
+  \ifx#1\relax\else
+    \@for\@subref@each:=#1\do{\expandafter\label\expandafter{\@subref@each}}%
+  \fi
+  \ignorespaces
+}
+%    \end{macrocode}
+% \end{macro}
+% \Finale
+\endinput

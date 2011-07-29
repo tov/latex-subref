@@ -1,0 +1,35 @@
+The subref Package
+
+SYNOPSIS
+
+    This package provides macros for referring to nested references. I
+    use this when I have a theorem with multiple parts in order to
+    attach labels to each part that refer to both the theorem number and
+    the part number.
+
+BUILDING
+
+    To build the PDF documentation and style file, merely run
+
+        % make
+
+    If you don't have make, it's possible to do it manually.  To create
+    the style file (subref.sty) and the documentation (subref.pdf), run
+    the following sequence of commands:
+
+        latex subref.ins
+        latex subref.dtx
+        makeindex -s gind.ist subref.idx
+        makeindex -s gglo.ist -o subref.gls subref.glo
+        latex subref.dtx
+        pdflatex subref.dtx
+
+    If you only want to build the style file, and not the documentation,
+    only the first command (latex subref.ins) is necessary.
+
+    The documentation is also available on the web at
+    http://www.ccs.neu.edu/home/tov/code/latex/
+
+Jesse A. Tov
+tov@ccs.neu.edu
+Fri, 29 Jul 2011 15:50:07 -0400
